@@ -1,4 +1,4 @@
-import ModeloProducto from "../modelos/ModeloProductos.js";
+import ModeloProducto from '../modelos/ModeloProductos.js';
 
 // Obtiene todos los productos
 export const getAllProducts = async (req, res) => {
@@ -41,7 +41,11 @@ export const getProducto = async (req, res) => {
         const producto = await ModeloProducto.findAll({
             where: { id: req.params.id }
         });
-        res.json(producto[0]);
+        if (producto.length > 0) {
+            res.json(producto[0]);
+        } else {
+            res.json({ message: 'Producto no encontrado' });
+        }
     } catch (error) {
         res.json({ message: error.message });
     }
@@ -50,10 +54,14 @@ export const getProducto = async (req, res) => {
 // Elimina un producto
 export const borrarProducto = async (req, res) => {
     try {
-        await ModeloProducto.destroy({
+        const rowsDeleted = await ModeloProducto.destroy({
             where: { id: req.params.id }
         });
-        res.json({ 'Mensaje': 'Producto Eliminado' });
+        if (rowsDeleted > 0) {
+            res.json({ 'Mensaje': 'Producto Eliminado' });
+        } else {
+            res.json({ message: 'Producto no encontrado' });
+        }
     } catch (error) {
         res.json({ message: error.message });
     }
